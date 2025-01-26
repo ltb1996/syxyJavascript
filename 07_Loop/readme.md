@@ -117,6 +117,91 @@ for (let i = 0; i < 10; i++) {
 // i 当前的值为：9
 ```
 
+## for-in 和 for-of 循环
+
+JavaScript提供了两种特殊的循环结构：for-in和for-of。它们分别用于不同的场景。
+
+### for-in 循环示例
+
+```js
+// 1. 遍历对象属性
+const student = {
+    name: "小明",
+    age: 18,
+    score: 90
+};
+
+console.log("遍历对象示例：");
+for (let key in student) {
+    console.log(`${key}: ${student[key]}`);
+}
+// 输出:
+// 遍历对象示例：
+// name: 小明
+// age: 18
+// score: 90
+
+// 2. 遍历数组（不推荐使用for-in遍历数组）
+const fruits = ["苹果", "香蕉", "橙子"];
+console.log("\n使用for-in遍历数组：");
+for (let index in fruits) {
+    console.log(`fruits[${index}] = ${fruits[index]}`);
+}
+// 输出:
+// 使用for-in遍历数组：
+// fruits[0] = 苹果
+// fruits[1] = 香蕉
+// fruits[2] = 橙子
+```
+
+### for-of 循环示例
+
+```js
+// 1. 遍历数组（推荐）
+const fruits = ["苹果", "香蕉", "橙子"];
+console.log("遍历数组示例：");
+for (let fruit of fruits) {
+    console.log(fruit);
+}
+// 输出:
+// 遍历数组示例：
+// 苹果
+// 香蕉
+// 橙子
+
+// 2. 遍历字符串
+const message = "Hello";
+console.log("\n遍历字符串示例：");
+for (let char of message) {
+    console.log(char);
+}
+// 输出:
+// 遍历字符串示例：
+// H
+// e
+// l
+// l
+// o
+
+// 3. 同时获取索引和值（使用entries()）
+const colors = ["红", "绿", "蓝"];
+console.log("\n同时遍历索引和值：");
+for (let [index, color] of colors.entries()) {
+    console.log(`colors[${index}] = ${color}`);
+}
+// 输出:
+// 同时遍历索引和值：
+// colors[0] = 红
+// colors[1] = 绿
+// colors[2] = 蓝
+```
+
+这两种循环结构的主要区别：
+1. for-in循环遍历对象的可枚举属性，返回的是属性名（键名）
+2. for-of循环遍历可迭代对象的值，直接返回每个元素的值
+3. for-in常用于遍历对象，for-of常用于遍历数组和其他可迭代对象
+4. for-of是ES6新增的特性，语法更简洁直观
+
 ## 习题
 
 补全下面的 `sum` 函数，完成逻辑: 返回从 1 到正整数 `num` 所有数的和。比如 `num` 为 5 时，返回 15.
@@ -133,3 +218,101 @@ console.log(sum(9)) // 应该返回 45
 ## 总结
 
 这一讲我们介绍了 JavaScript 的循环语句，主要介绍了 `for` 和 `while` 两种循环结构，以及跳出循环的方法。
+
+## switch 语句
+
+switch语句的结构如下：
+
+```
+┌─────────────────────────┐
+│     switch(表达式)      │
+├─────────────────────────┤
+│  case 值1:             │
+│      语句1             │──┐
+│      break;            │  │
+├─────────────────────────┤  │
+│  case 值2:             │  │
+│      语句2             │  │── 只执行匹配的case
+│      break;            │  │   直到遇到break
+├─────────────────────────┤  │
+│  case 值3:             │  │
+│      语句3             │──┘
+│      break;            │
+├─────────────────────────┤
+│  default:              │
+│      默认语句          │
+└─────────────────────────┘
+```
+
+其中：
+1. 先计算 `switch` 后的表达式的值
+2. 依次与 `case` 后的值比较
+3. 若相等，则执行对应 `case` 下的语句，直到遇到 `break` 或结束
+4. 若都不相等，则执行 `default` 下的语句
+5. `break` 语句用来跳出 switch 结构
+
+示例：
+
+```js
+// 1. 基础示例：根据水果名输出对应的颜色
+const fruit = "苹果";
+switch(fruit) {
+    case "香蕉":
+        console.log("香蕉是黄色的");
+        break;
+    case "苹果":
+        console.log("苹果是红色的");
+        break;
+    case "葡萄":
+        console.log("葡萄是紫色的");
+        break;
+    default:
+        console.log("不知道是什么颜色");
+}
+// 输出: 苹果是红色的
+
+// 2. break语句的重要性
+const grade = "A";
+switch(grade) {
+    case "A":
+        console.log("优秀！");
+        // 故意不写break，演示穿透效果
+    case "B":
+        console.log("良好");
+        break;
+    case "C":
+        console.log("及格");
+        break;
+    default:
+        console.log("不及格");
+}
+// 输出:
+// 优秀！
+// 良好
+
+// 3. 多个case使用相同的执行语句
+const day = 3;
+switch(day) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        console.log("工作日");
+        break;
+    case 6:
+    case 7:
+        console.log("周末");
+        break;
+    default:
+        console.log("无效的日期");
+}
+// 输出: 工作日
+```
+
+注意事项：
+1. 每个case后面要加break，否则会继续执行下一个case（称为"穿透"效果）
+2. default是可选的，当所有case都不匹配时执行
+3. case的值必须是常量或常量表达式
+4. switch使用严格相等(===)进行比较
+5. 多个case可以共用同一个执行语句块
