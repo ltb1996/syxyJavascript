@@ -31,6 +31,7 @@
 }
 /** break */
 {
+  console.log("break循环");
   for (let i = 0; i < 3; i++) {
     console.log(`i 当前的值为：${i}`);
     if (i === 2) break;
@@ -39,6 +40,7 @@
 
 /** continue */
 {
+  console.log("continue循环");
   for (let i = 0; i < 10; i++) {
     if (i % 2 === 0) continue
     console.log(`i 当前的值为：${i}`)
