@@ -1,341 +1,87 @@
-// ---------- 变量声明 (02_Declaration) ----------
-// 使用 let 声明可变变量
-let tasks = [];
-let currentFilter = "all";
+// 获取页面元素 - 通过ID选择器获取HTML页面上的元素
+const taskInput = document.getElementById("taskInput");    // 获取任务输入框元素
+const addBtn = document.getElementById("addBtn");          // 获取添加任务按钮元素
+const taskList = document.getElementById("taskList");      // 获取任务列表容器元素
+const statsElement = document.getElementById("stats");     // 获取统计信息显示元素
+const sortByNameBtn = document.getElementById("sortByName"); // 获取按名称排序按钮
+const sortByDateBtn = document.getElementById("sortByDate"); // 获取按日期排序按钮
 
-// 使用 const 声明不可变常量
-const taskInput = document.getElementById("taskInput");
-const addBtn = document.getElementById("addBtn");
-const taskList = document.getElementById("taskList");
-const statsElement = document.getElementById("stats");
-
-// ---------- 数据类型 (03_CommonTypes) ----------
-// 数值类型示例
-const defaultTaskCount = 0;
-const defaultCompletionRate = 0.0;
-
-// 字符串类型示例
-const appName = "任务管理系统";
-const appVersion = "1.0";
-const appDescription = `${appName} 版本 ${appVersion}`;
-console.log(appDescription); // 任务管理系统 版本 1.0
-
-// 布尔类型示例
-const isAppRunning = true;
-const isDebugMode = false;
-
-// ---------- 运算符 (04_Operators) ----------
-// 函数：添加任务
-function addTask() {
-  // 算术运算符示例
-  const currentTaskCount = tasks.length + 1;
-
-  // 比较运算符示例
-  if (taskInput.value === "") {
-    alert("任务不能为空!");
-    return;
-  }
-
-  // 逻辑运算符示例
-  if (isTaskDuplicate(taskInput.value) && !isDebugMode) {
-    alert("任务已存在!");
-    return;
-  }
-
-  // 创建新任务对象
-  const newTask = {
-    id: Date.now(),
-    text: taskInput.value,
-    completed: false,
-    createdAt: new Date(),
-  };
-
-  // 将新任务添加到数组
-  tasks.push(newTask);
-
-  // 清空输入框
-  taskInput.value = "";
-
-  // 更新界面
-  renderTasks();
-  updateStats();
-}
-
-// ---------- 函数 (05_Function) ----------
-// 函数声明
-function renderTasks() {
-  // 清空任务列表
-  taskList.innerHTML = "";
-
-  // 根据过滤条件筛选任务
-  const filteredTasks = filterTasks(tasks, currentFilter);
-
-  // 遍历任务数组并渲染
-  for (let i = 0; i < filteredTasks.length; i++) {
-    renderTask(filteredTasks[i]);
-  }
-}
-
-// 函数表达式
-const filterTasks = function (taskArray, filter) {
-  if (filter === "active") {
-    return taskArray.filter((task) => !task.completed);
-  } else if (filter === "completed") {
-    return taskArray.filter((task) => task.completed);
-  } else {
-    return taskArray;
-  }
-};
-
-// 箭头函数
-const isTaskDuplicate = (text) => {
-  return tasks.some((task) => task.text === text);
-};
-
-// ---------- 条件语句 (06_Condition) ----------
-function toggleTaskStatus(id) {
-  for (let i = 0; i < tasks.length; i++) {
-    if (tasks[i].id === id) {
-      // 使用条件语句
-      if (tasks[i].completed) {
-        tasks[i].completed = false;
-      } else {
-        tasks[i].completed = true;
-      }
-
-      // 三元运算符示例
-      const statusMessage = tasks[i].completed ? "已完成" : "未完成";
-      console.log(`任务 "${tasks[i].text}" 状态更新为: ${statusMessage}`);
-
-      renderTasks();
-      updateStats();
-      break;
-    }
-  }
-}
-
-// ---------- 循环 (07_Loop) ----------
-function updateStats() {
-  let totalTasks = tasks.length;
-  let completedTasks = 0;
-
-  // for 循环示例
-  for (let i = 0; i < tasks.length; i++) {
-    if (tasks[i].completed) {
-      completedTasks++;
-    }
-  }
-
-  // 计算完成率
-  let completionRate = 0;
-
-  // while 循环示例
-  let j = 0;
-  while (j < 1) {
-    if (totalTasks > 0) {
-      completionRate = (completedTasks / totalTasks) * 100;
-    }
-    j++;
-  }
-
-  // 使用 break 和 continue 的示例
-  let specialTasks = 0;
-  for (let i = 0; i < tasks.length; i++) {
-    // 如果没有任务，提前跳出循环
-    if (tasks.length === 0) break;
-
-    // 跳过已完成的任务
-    if (tasks[i].completed) continue;
-
-    // 计算特殊任务数量（这里以任务名称包含"重要"为例）
-    if (tasks[i].text.includes("重要")) {
-      specialTasks++;
-    }
-  }
-
-  // 更新统计数据显示
-  statsElement.innerHTML = `总任务: ${totalTasks} | 已完成: ${completedTasks} | 完成率: ${completionRate.toFixed(
-    1
-  )}% | 未完成重要任务: ${specialTasks}`;
-}
-
-// ---------- 数组 (08_Array) ----------
-function renderTask(task) {
-  // 创建列表项
-  const li = document.createElement("li");
-  li.className = task.completed ? "completed" : "";
-
-  // 创建任务文本元素
-  const span = document.createElement("span");
-  span.className = "task-text";
-  span.textContent = task.text;
-
-  // 创建任务操作区域
-  const actions = document.createElement("div");
-  actions.className = "task-actions";
-
-  // 完成/取消按钮
-  const completeBtn = document.createElement("button");
-  completeBtn.className = "complete-btn";
-  completeBtn.textContent = task.completed ? "取消完成" : "完成";
-  completeBtn.onclick = function () {
-    toggleTaskStatus(task.id);
-  };
-
-  // 删除按钮
-  const deleteBtn = document.createElement("button");
-  deleteBtn.className = "delete-btn";
-  deleteBtn.textContent = "删除";
-  deleteBtn.onclick = function () {
-    deleteTask(task.id);
-  };
-
-  // 编辑按钮
-  const editBtn = document.createElement("button");
-  editBtn.className = "edit-btn";
-  editBtn.textContent = "编辑";
-  editBtn.onclick = function () {
-    editTask(task.id);
-  };
-
-  // 添加元素到DOM
-  actions.appendChild(completeBtn);
-  actions.appendChild(editBtn);
-  actions.appendChild(deleteBtn);
-
-  li.appendChild(span);
-  li.appendChild(actions);
-
-  taskList.appendChild(li);
-}
-
-function deleteTask(id) {
-  // 使用数组方法filter创建新数组
-  const newTasks = tasks.filter(function (task) {
-    return task.id !== id;
-  });
-
-  // 更新任务数组
-  tasks = newTasks;
-
-  // 更新界面
-  renderTasks();
-  updateStats();
-}
-
-function editTask(id) {
-  // 查找要编辑的任务
-  const task = tasks.find((task) => task.id === id);
-  if (!task) return;
-
-  // 弹出提示框获取新的任务文本
-  const newText = prompt("请输入新的任务内容:", task.text);
-
-  // 如果用户取消或输入为空，不做更改
-  if (newText === null || newText === "") return;
-
-  // 更新任务文本
-  task.text = newText;
-
-  // 更新界面
-  renderTasks();
-}
-
-// 按名称排序
-function sortTasksByName() {
-  // 复制数组并排序
-  const sortedTasks = [...tasks];
-  sortedTasks.sort((a, b) => {
-    if (a.text < b.text) return -1;
-    if (a.text > b.text) return 1;
-    return 0;
-  });
-
-  // 更新任务数组
-  tasks = sortedTasks;
-
-  // 更新界面
-  renderTasks();
-}
-
-// 按创建日期排序
-function sortTasksByDate() {
-  // 复制数组并排序
-  const sortedTasks = [...tasks];
-  sortedTasks.sort((a, b) => a.createdAt - b.createdAt);
-
-  // 更新任务数组
-  tasks = sortedTasks;
-
-  // 更新界面
-  renderTasks();
-}
-
-// 事件监听器
-addBtn.addEventListener("click", addTask);
-
-taskInput.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    addTask();
-  }
-});
-
-// 过滤按钮点击事件
-document.getElementById("filterAll").addEventListener("click", function () {
-  currentFilter = "all";
-  renderTasks();
-});
-
-document.getElementById("filterActive").addEventListener("click", function () {
-  currentFilter = "active";
-  renderTasks();
-});
-
-document
-  .getElementById("filterCompleted")
-  .addEventListener("click", function () {
-    currentFilter = "completed";
-    renderTasks();
-  });
-
-// 排序按钮点击事件
-document
-  .getElementById("sortByName")
-  .addEventListener("click", sortTasksByName);
-document
-  .getElementById("sortByDate")
-  .addEventListener("click", sortTasksByDate);
-
-// 初始化
-updateStats();
-
-// 添加一些示例任务
-const sampleTasks = [
-  {
-    id: 1,
-    text: "学习JavaScript基础",
-    completed: true,
-    createdAt: new Date(2023, 0, 15),
-  },
-  {
-    id: 2,
-    text: "完成数组练习",
-    completed: false,
-    createdAt: new Date(2023, 0, 16),
-  },
-  {
-    id: 3,
-    text: "重要：准备项目演示",
-    completed: false,
-    createdAt: new Date(2023, 0, 17),
-  },
+// 任务数组 - 存储所有任务对象，包含文本和创建时间
+let tasks = [
+  { text: "fffff4", createdAt: new Date(2025, 1, 14) }, // 添加示例任务1
+  { text: "33333", createdAt: new Date(2025, 1, 16) }        // 添加示例任务2
 ];
 
-// 使用数组方法将示例任务添加到任务数组
-tasks = tasks.concat(sampleTasks);
+// 更新页面显示 - 将任务数组内容显示到页面上
+function updateDisplay() {
+  // 更新任务列表 - 先清空再重建列表项
+  taskList.innerHTML = "";                               // 清空当前任务列表的所有内容
+  tasks.forEach(task => {                                // 遍历任务数组中的每个任务
+    const li = document.createElement("li");             // 创建一个新的列表项元素
+    
+    // 创建任务文本元素
+    const span = document.createElement("span");         // 创建一个span元素用于显示任务文本
+    span.className = "task-text";                        // 设置span的CSS类名为task-text
+    span.textContent = task.text;                        // 设置span的内容为当前任务文本
+    
+    // 创建日期显示元素（放在行末尾）
+    const dateSpan = document.createElement("span");     // 创建显示日期的单独元素
+    dateSpan.className = "task-date";                    // 添加类名方便样式控制
+    dateSpan.textContent = "(" + task.createdAt.toLocaleString() + ")"; // 显示日期时间
+    
+    // 把文本和日期都添加到列表项
+    li.appendChild(span);                                // 先添加任务文本
+    li.appendChild(dateSpan);                            // 再添加日期显示
+    
+    taskList.appendChild(li);                            // 将列表项添加到任务列表中
+  });
+  
+  // 更新统计 - 显示任务总数
+  statsElement.innerHTML = `总任务: ${tasks.length}`;    // 更新统计信息显示总任务数量
+}
 
-// 更新界面
-renderTasks();
-updateStats();
+// 添加任务 - 处理用户输入并添加新任务
+function addTask() {
+  // 验证输入 - 确保输入不为空
+  if (!taskInput.value) {                                // 如果输入框为空
+    alert("任务不能为空!");                              // 显示警告信息
+    return;                                              // 终止函数执行
+  }
+  // 检查重复 - 确保任务不重复
+  if (tasks.some(task => task.text === taskInput.value)) { // 检查是否有相同文本的任务
+    alert("任务已存在!");                                // 显示警告信息
+    return;                                              // 终止函数执行
+  }
+  // 添加并更新 - 将新任务添加到数组并更新界面
+  const newTask = {                                      // 创建新任务对象
+    text: taskInput.value,                               // 设置任务文本
+    createdAt: new Date()                                // 设置创建时间为当前时间
+  };
+  tasks.push(newTask);                                   // 将新任务添加到任务数组
+  taskInput.value = "";                                  // 清空输入框
+  updateDisplay();                                       // 更新页面显示
+}
 
-console.log("任务管理系统初始化完成！");
+// 初始化 - 设置事件监听器
+addBtn.addEventListener("click", addTask);               // 点击添加按钮时执行addTask函数
+taskInput.addEventListener("keypress", e => {            // 监听输入框的按键事件
+  if (e.key === "Enter") addTask();                      // 如果按下回车键则执行addTask函数
+});
+
+// 按名称排序功能 - 将任务按字母顺序排序
+function sortTasksByName() {
+  tasks.sort((a, b) => a.text.localeCompare(b.text));    // 对任务数组按文本字母顺序排序
+  updateDisplay();                                       // 更新页面显示排序后的任务
+}
+// 按日期排序功能 - 将任务按创建日期排序
+function sortTasksByDate() {
+  tasks.sort((a, b) => a.createdAt - b.createdAt);       // 对任务数组按创建时间排序
+  updateDisplay();                                       // 更新页面显示排序后的任务
+}
+
+// 绑定排序按钮点击事件
+sortByNameBtn.addEventListener("click", sortTasksByName); // 点击按钮时执行名称排序函数
+sortByDateBtn.addEventListener("click", sortTasksByDate); // 点击按钮时执行日期排序函数
+
+// 首次显示 - 页面加载后立即显示任务列表
+updateDisplay();                                         // 初始化页面时显示任务列表
